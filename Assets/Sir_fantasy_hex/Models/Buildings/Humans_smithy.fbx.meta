@@ -1,0 +1,180 @@
+fileFormatVersion: 2
+guid: bb2494c3b2e161647900b3cdf949e52c
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: anvil
+    100002: anvilWood
+    100004: column1
+    100006: column2
+    100008: column3
+    100010: column4
+    100012: Cube.019
+    100014: Cube.196
+    100016: //RootNode
+    100018: Icosphere
+    100020: Icosphere.001
+    100022: Icosphere.002
+    100024: Plane.006
+    100026: Plane.014
+    100028: stove
+    100030: walls
+    100032: window
+    100034: window.001
+    400000: anvil
+    400002: anvilWood
+    400004: column1
+    400006: column2
+    400008: column3
+    400010: column4
+    400012: Cube.019
+    400014: Cube.196
+    400016: //RootNode
+    400018: Icosphere
+    400020: Icosphere.001
+    400022: Icosphere.002
+    400024: Plane.006
+    400026: Plane.014
+    400028: stove
+    400030: walls
+    400032: window
+    400034: window.001
+    2100000: lp_mat
+    2300000: anvil
+    2300002: anvilWood
+    2300004: column1
+    2300006: column2
+    2300008: column3
+    2300010: column4
+    2300012: Cube.019
+    2300014: Cube.196
+    2300016: Icosphere
+    2300018: Icosphere.001
+    2300020: Icosphere.002
+    2300022: Plane.006
+    2300024: Plane.014
+    2300026: stove
+    2300028: walls
+    2300030: window
+    2300032: window.001
+    3300000: anvil
+    3300002: anvilWood
+    3300004: column1
+    3300006: column2
+    3300008: column3
+    3300010: column4
+    3300012: Cube.019
+    3300014: Cube.196
+    3300016: Icosphere
+    3300018: Icosphere.001
+    3300020: Icosphere.002
+    3300022: Plane.006
+    3300024: Plane.014
+    3300026: stove
+    3300028: walls
+    3300030: window
+    3300032: window.001
+    4300000: Plane.014
+    4300002: stove
+    4300004: Icosphere
+    4300006: Icosphere.001
+    4300008: Icosphere.002
+    4300010: anvil
+    4300012: anvilWood
+    4300014: walls
+    4300016: column1
+    4300018: column2
+    4300020: column3
+    4300022: column4
+    4300024: window
+    4300026: window.001
+    4300028: Plane.006
+    4300030: Cube.019
+    4300032: Cube.196
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

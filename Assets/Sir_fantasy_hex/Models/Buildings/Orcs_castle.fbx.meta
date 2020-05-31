@@ -1,0 +1,217 @@
+fileFormatVersion: 2
+guid: eb7b75f886a88144ea24bf8c1ff638f0
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Circle.011
+    100002: Circle.012
+    100004: Circle.013
+    100006: Circle.014
+    100008: Cylinder.085
+    100010: Cylinder.086
+    100012: Cylinder.087
+    100014: Cylinder.088
+    100016: Cylinder.089
+    100018: //RootNode
+    100020: OrcsHsDoors
+    100022: Plane.021
+    100024: Plane.022
+    100026: Plane.023
+    100028: Plane.024
+    100030: Plane.027
+    100032: Plane.028
+    100034: Plane.029
+    100036: Plane.030
+    100038: Plane.031
+    100040: Plane.032
+    100042: Skull orcs decor.000
+    100044: Skull orcs decor.002
+    100046: Skull orcs decor.003
+    100048: Skull orcs decor.004
+    400000: Circle.011
+    400002: Circle.012
+    400004: Circle.013
+    400006: Circle.014
+    400008: Cylinder.085
+    400010: Cylinder.086
+    400012: Cylinder.087
+    400014: Cylinder.088
+    400016: Cylinder.089
+    400018: //RootNode
+    400020: OrcsHsDoors
+    400022: Plane.021
+    400024: Plane.022
+    400026: Plane.023
+    400028: Plane.024
+    400030: Plane.027
+    400032: Plane.028
+    400034: Plane.029
+    400036: Plane.030
+    400038: Plane.031
+    400040: Plane.032
+    400042: Skull orcs decor.000
+    400044: Skull orcs decor.002
+    400046: Skull orcs decor.003
+    400048: Skull orcs decor.004
+    2100000: lp_mat
+    2300000: Circle.011
+    2300002: Circle.012
+    2300004: Circle.013
+    2300006: Circle.014
+    2300008: Cylinder.085
+    2300010: Cylinder.086
+    2300012: Cylinder.087
+    2300014: Cylinder.088
+    2300016: Cylinder.089
+    2300018: OrcsHsDoors
+    2300020: Plane.021
+    2300022: Plane.022
+    2300024: Plane.023
+    2300026: Plane.024
+    2300028: Plane.027
+    2300030: Plane.028
+    2300032: Plane.029
+    2300034: Plane.030
+    2300036: Plane.031
+    2300038: Plane.032
+    2300040: Skull orcs decor.000
+    2300042: Skull orcs decor.002
+    2300044: Skull orcs decor.003
+    2300046: Skull orcs decor.004
+    2300048: //RootNode
+    3300000: Circle.011
+    3300002: Circle.012
+    3300004: Circle.013
+    3300006: Circle.014
+    3300008: Cylinder.085
+    3300010: Cylinder.086
+    3300012: Cylinder.087
+    3300014: Cylinder.088
+    3300016: Cylinder.089
+    3300018: OrcsHsDoors
+    3300020: Plane.021
+    3300022: Plane.022
+    3300024: Plane.023
+    3300026: Plane.024
+    3300028: Plane.027
+    3300030: Plane.028
+    3300032: Plane.029
+    3300034: Plane.030
+    3300036: Plane.031
+    3300038: Plane.032
+    3300040: Skull orcs decor.000
+    3300042: Skull orcs decor.002
+    3300044: Skull orcs decor.003
+    3300046: Skull orcs decor.004
+    3300048: //RootNode
+    4300000: Cylinder.085
+    4300002: Cylinder.086
+    4300004: Plane.027
+    4300006: Plane.028
+    4300008: Plane.029
+    4300010: Plane.030
+    4300012: Plane.031
+    4300014: Cylinder.087
+    4300016: Cylinder.088
+    4300018: Circle.011
+    4300020: Plane.032
+    4300022: OrcsHsDoors
+    4300024: Circle.012
+    4300026: Cylinder.089
+    4300028: Circle.013
+    4300030: Circle.014
+    4300032: Plane.021
+    4300034: Skull orcs decor.000
+    4300036: Plane.022
+    4300038: Skull orcs decor.002
+    4300040: Plane.023
+    4300042: Skull orcs decor.003
+    4300044: Plane.024
+    4300046: Skull orcs decor.004
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
