@@ -47,7 +47,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  cameraHolderTransform: {fileID: 4753619237249756482}
+  playerIndex: 0
+  cameraPrefab: {fileID: 694793173529738305, guid: 1dba6dc6b8569404d810953299217599,
+    type: 3}
+  cameraHolder: {fileID: 4753619237249756482}
 --- !u!114 &-7206076506121669366
 MonoBehaviour:
   m_ObjectHideFlags: 0

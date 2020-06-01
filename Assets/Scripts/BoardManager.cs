@@ -5,9 +5,16 @@ using UnityEngine;
 
 namespace ChessPrototype.Base
 {
-    public class BoardManager : NetworkBehaviour
+    public class BoardManager : MonoBehaviour
     {
         public Tile[,] tilePositions;
+
+        public GameObject pawnPrefab;
+        public GameObject knightPrefab;
+        public GameObject rookPrefab;
+        public GameObject bishopPrefab;
+        public GameObject magePrefab;
+        public GameObject kingPrefab;
 
         private void Start()
         {
@@ -17,6 +24,28 @@ namespace ChessPrototype.Base
             FillTilePositions(tiles);
             InitTiles(tiles);
         }
+
+        public GameObject GetPiecePrefab(CurrentPiece piece)
+        {
+            switch (piece)
+            {
+                case CurrentPiece.Pawn:
+                    return pawnPrefab;
+                case CurrentPiece.Knight:
+                    return knightPrefab;
+                case CurrentPiece.Rook:
+                    return rookPrefab;
+                case CurrentPiece.Bishop:
+                    return bishopPrefab;
+                case CurrentPiece.Mage:
+                    return magePrefab;
+                case CurrentPiece.King:
+                    return kingPrefab;
+                default:
+                    return null;
+            }
+        }
+
 
         private void FillTilePositions(Tile[] tiles)
         {

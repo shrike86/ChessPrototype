@@ -1,28 +1,30 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ChessPrototype.Base
 {
-    public class Tile : MonoBehaviour
+    public class Tile : NetworkBehaviour
     {
-        public TilePosition tilePos;
+        public TilePositionName tilePos;
 
         private BoardManager boardManager;
 
         public void Init(BoardManager manager, int index)
         {
             this.boardManager = manager;
+
             SetTilePosition(index);
         }
-
+   
         private void SetTilePosition(int index)
         {
-            tilePos = (TilePosition)index;
+            tilePos = (TilePositionName)index;
         }
     }
 
-    public enum TilePosition
+    public enum TilePositionName
     {
         A1, B1, C1, D1, E1, F1, G1, H1,
         A2, B2, C2, D2, E2, F2, G2, H2,
@@ -32,5 +34,16 @@ namespace ChessPrototype.Base
         A6, B6, C6, D6, E6, F6, G6, H6,
         A7, B7, C7, D7, E7, F7, G7, H7,
         A8, B8, C8, D8, E8, F8, G8, H8,
+    }
+
+    public enum CurrentPiece : byte
+    { 
+        Empty = 0,
+        Pawn = 1,
+        Knight = 2,
+        Rook = 3,
+        Bishop = 4,
+        Mage = 5,
+        King = 6
     }
 }
