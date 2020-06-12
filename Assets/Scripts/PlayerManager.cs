@@ -1,4 +1,6 @@
-﻿using Mirror;
+﻿using ChessPrototype.Pieces;
+using ChessPrototype.UI;
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,17 +15,26 @@ namespace ChessPrototype.Base
 
         public GameObject cameraPrefab;
         public GameObject cameraHolder;
+        public Camera mainCamera;
 
-        private NetworkGameManager networkGameManager;
+        public NetworkGameManager networkGameManager;
+        public GameManager gameManager;
+
+        public MoveManager movePiece;
 
         public override void OnStartLocalPlayer()
         {
             base.OnStartLocalPlayer();
 
             networkGameManager = NetworkManager.singleton as NetworkGameManager;
+            gameManager = FindObjectOfType<GameManager>();
+            movePiece = GetComponent<MoveManager>();
 
             SpawnPlayerCamera();
             SpawnPieces();
+
+            gameManager.Init(mainCamera);
+            movePiece.Init(gameManager, this);
         }
 
         private void SpawnPlayerCamera()
@@ -37,6 +48,8 @@ namespace ChessPrototype.Base
 
             camera.transform.localPosition = pos;
             camera.transform.localRotation = rot;
+
+            mainCamera = camera.GetComponentInChildren<Camera>();
         }
 
         private void SpawnPieces()
@@ -51,6 +64,7 @@ namespace ChessPrototype.Base
     public enum PlayerIndex : byte
     { 
         Player1,
-        Player2
+        Player2,
+        None
     }
 }

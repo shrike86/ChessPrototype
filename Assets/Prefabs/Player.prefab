@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 183327828807399105}
-  - component: {fileID: 4921473800082953687}
   - component: {fileID: -7206076506121669366}
+  - component: {fileID: 4921473800082953687}
+  - component: {fileID: 7291224043741740716}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -33,6 +34,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7206076506121669366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 311935773650000970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!114 &4921473800082953687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51,7 +68,10 @@ MonoBehaviour:
   cameraPrefab: {fileID: 694793173529738305, guid: 1dba6dc6b8569404d810953299217599,
     type: 3}
   cameraHolder: {fileID: 4753619237249756482}
---- !u!114 &-7206076506121669366
+  mainCamera: {fileID: 0}
+  networkGameManager: {fileID: 0}
+  gameManager: {fileID: 0}
+--- !u!114 &7291224043741740716
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -60,13 +80,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 311935773650000970}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Script: {fileID: 11500000, guid: d004a94f515f76544a9a8609d069c6c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
+  syncMode: 0
+  syncInterval: 0.1
+  gameManager: {fileID: 0}
 --- !u!1 &4753619237249756482
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,13 +1,25 @@
-﻿using Mirror;
+﻿using ChessPrototype.Pieces;
+using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ChessPrototype.Base
 {
     public class Tile : NetworkBehaviour
     {
+        [SyncVar]
         public TilePositionName tilePos;
+        [SyncVar]
+        public CurrentPiece networkPiece;
+        [SyncVar]
+        public PlayerIndex occupyingPlayer;
+        [SyncVar]
+        public int currentPieceId;
+
+        public bool isSelected;
 
         private BoardManager boardManager;
 
@@ -15,16 +27,29 @@ namespace ChessPrototype.Base
         {
             this.boardManager = manager;
 
-            SetTilePosition(index);
+            if (isServer)
+            {
+                SetTilePosition(index);
+                SetNonPlayerIndexes(index);
+            }
         }
-   
+
+        private void SetNonPlayerIndexes(int index)
+        {
+            // Tiles in row range 3 - 6 will not be occupied on start.
+            if (Enumerable.Range(15, 46).Contains(index))
+            {
+                occupyingPlayer = PlayerIndex.None;
+            }
+        }
+
         private void SetTilePosition(int index)
         {
             tilePos = (TilePositionName)index;
         }
     }
 
-    public enum TilePositionName
+    public enum TilePositionName : byte
     {
         A1, B1, C1, D1, E1, F1, G1, H1,
         A2, B2, C2, D2, E2, F2, G2, H2,
@@ -37,7 +62,7 @@ namespace ChessPrototype.Base
     }
 
     public enum CurrentPiece : byte
-    { 
+    {
         Empty = 0,
         Pawn = 1,
         Knight = 2,

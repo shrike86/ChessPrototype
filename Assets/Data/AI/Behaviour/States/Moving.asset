@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72186c14b10a1e44c91d884296556e71, type: 3}
+  m_Name: Moving
+  m_EditorClassIdentifier: 
+  onFixed: []
+  onUpdate:
+  - {fileID: 11400000, guid: 930c87190776afa479dc5296e24af455, type: 2}
+  onEnter:
+  - {fileID: 11400000, guid: c77e3dc98e37f22419647af72992a618, type: 2}
+  onExit:
+  - {fileID: 11400000, guid: 6b78d540566585042ba1036da3269e3a, type: 2}
+  - {fileID: 11400000, guid: 7f21ed366416dd547b47e4cca9bb3ca1, type: 2}
+  idCount: 0
+  transitions:
+  - id: 0
+    condition: {fileID: 11400000, guid: b0214a4fa10eeba4cae14c8f991ec6ce, type: 2}
+    targetState: {fileID: 11400000, guid: 1e8952288ca8f6e4db2f42b8426510d8, type: 2}
+    disable: 0
+  - id: 0
+    condition: {fileID: 11400000, guid: 4a2993581a58bd84ea7daa1888f6061e, type: 2}
+    targetState: {fileID: 11400000, guid: dcf845171cece8c4c88fef067b8c64e2, type: 2}
+    disable: 0

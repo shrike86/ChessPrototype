@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72186c14b10a1e44c91d884296556e71, type: 3}
+  m_Name: Idle
+  m_EditorClassIdentifier: 
+  onFixed: []
+  onUpdate: []
+  onEnter:
+  - {fileID: 11400000, guid: 7f21ed366416dd547b47e4cca9bb3ca1, type: 2}
+  onExit: []
+  idCount: 0
+  transitions:
+  - id: 0
+    condition: {fileID: 11400000, guid: dd73d3f797fdaf342b831a3fbc6d0e20, type: 2}
+    targetState: {fileID: 11400000, guid: aec97c84854bee34baa4cc608dc5baf4, type: 2}
+    disable: 0

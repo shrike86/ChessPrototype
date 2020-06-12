@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,28 @@ namespace ChessPrototype.Base
             InitTiles(tiles);
         }
 
+        public bool IsTargetTileOccupied(TilePositionName name)
+        {
+            Tile targetTile = GetTileByPositionName(name);
+            return targetTile.occupyingPlayer != PlayerIndex.None;
+        }
+
+        public bool IsTargetTileOccupiedByOpposingPlayer(TilePositionName name, PlayerIndex callingPlayer)
+        {
+            Tile targetTile = GetTileByPositionName(name);
+
+            switch (callingPlayer)
+            {
+                case PlayerIndex.Player1:
+                    return targetTile.occupyingPlayer == PlayerIndex.Player2;
+                case PlayerIndex.Player2:
+                    return targetTile.occupyingPlayer == PlayerIndex.Player1;
+                default:
+                    return false;
+            }
+        }
+
+
         public GameObject GetPiecePrefab(CurrentPiece piece)
         {
             switch (piece)
@@ -46,6 +69,59 @@ namespace ChessPrototype.Base
             }
         }
 
+        public Tile GetTileByPositionName(TilePositionName pos)
+        {
+            Tile tile = null;
+
+            for (int i = 0; i <= 7; i++)
+            {
+                for (int j = 0; j <= 7; j++)
+                {
+                    if (tilePositions[i, j].tilePos == pos)
+                    {
+                        tile = tilePositions[i, j];
+                    }
+                }
+            }
+
+            return tile;
+        }
+
+        public Tile GetTileByIndex(int row, int column)
+        {
+            return tilePositions[row, column];
+        }
+
+        public Tuple<int, int> GetTileIndexByName(TilePositionName name)
+        {
+            Tuple<int, int> tileIndex = null;
+
+            for (int i = 0; i <= 7; i++)
+            {
+                for (int j = 0; j <= 7; j++)
+                {
+                    if (tilePositions[i, j].tilePos == name)
+                    {
+                        tileIndex = new Tuple<int, int>(i, j);
+                    }
+                }
+            }
+
+            if (tileIndex == null)
+            {
+                Debug.Log("Could not get a tile index for position name: " + name);
+            }
+
+            return tileIndex;
+        }
+
+        private void InitTiles(Tile[] tiles)
+        {
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                tiles[i].Init(this, i);
+            }
+        }
 
         private void FillTilePositions(Tile[] tiles)
         {
@@ -114,13 +190,6 @@ namespace ChessPrototype.Base
             }
         }
 
-        private void InitTiles(Tile[] tiles)
-        {
-            for (int i = 0; i < tiles.Length; i++)
-            {
-                tiles[i].Init(this, i);
-            }
-        }
 
     }
 }

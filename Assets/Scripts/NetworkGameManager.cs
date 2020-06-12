@@ -1,4 +1,6 @@
-﻿using Mirror;
+﻿using ChessPrototype.Pieces;
+using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,12 +10,29 @@ namespace ChessPrototype.Base
     public class NetworkGameManager : NetworkManager
     {
         public BoardManager boardManager;
+        public TurnManager turnManager;
+
+        public List<Piece> pieces = new List<Piece>();
 
         public bool isHost;
+        public bool allPlayersConnected;
+        public bool isTurnManagerInit;
+
+        private int pieceIndex;
+
+        private float updateTick = 1f;
+        private float timer;
+
 
         public override void Start()
         {
             base.Start();
+
+            pieceIndex = 1;
+            timer = 0;
+
+            allPlayersConnected = false;
+            isTurnManagerInit = false;
 
             GameConstants.Init();
 
@@ -25,6 +44,25 @@ namespace ChessPrototype.Base
             {
                 StartClient();
             }
+
+            if (boardManager == null)
+                boardManager = FindObjectOfType<BoardManager>();
+        }
+
+        private void Update()
+        {
+            if (turnManager == null)
+                turnManager = FindObjectOfType<TurnManager>();
+
+            if (!isHost)
+                return;
+
+            MonitorAllPlayersConnected();
+
+            if (!allPlayersConnected)
+                return;
+
+            InitTurnManager();
         }
 
         public override void OnStartServer()
@@ -79,6 +117,49 @@ namespace ChessPrototype.Base
             conn.Send(spawnPlayerRequest);
         }
 
+        public void AssignPieceToTile(TilePositionName tileName, CurrentPiece piece, PlayerIndex player, int pieceId)
+        {
+            Tile tile = boardManager.GetTileByPositionName(tileName);
+
+            tile.networkPiece = piece;
+            tile.occupyingPlayer = player;
+            tile.currentPieceId = pieceId;
+        }
+
+        public void UnassignPieceFromTile(TilePositionName tileName)
+        {
+            Tile tile = boardManager.GetTileByPositionName(tileName);
+
+            tile.networkPiece = CurrentPiece.Empty;
+            tile.occupyingPlayer = PlayerIndex.None;
+            tile.currentPieceId = 0;
+        }
+
+        public bool AllPlayersConnected() => numPlayers == 2;
+
+        private void MonitorAllPlayersConnected()
+        {
+            if (!allPlayersConnected)
+            {
+                timer += Time.deltaTime;
+
+                if (timer >= updateTick)
+                {
+                    allPlayersConnected = AllPlayersConnected();
+                    timer = 0;
+                }
+            }
+        }
+
+        private void InitTurnManager()
+        {
+            if (allPlayersConnected && !turnManager.isGameStarted)
+            {
+                turnManager.Init(this);
+            }
+        }
+
+
         private void SpawnPlayer(NetworkConnection conn, ClientSpawnPlayerRequest msg)
         {
             GameObject go = Instantiate(playerPrefab);
@@ -98,76 +179,125 @@ namespace ChessPrototype.Base
 
         private void SpawnPieces(NetworkConnection conn, ClientSpawnPiecesRequest msg)
         {
+
             switch (msg.index)
             {
                 case PlayerIndex.Player1:
-                    SpawnPawns(conn, PlayerIndex.Player1);
-                    SpawnBishops(conn, PlayerIndex.Player1);
-                    SpawnRooks(conn, PlayerIndex.Player1);
-                    SpawnKnights(conn, PlayerIndex.Player1);
-                    SpawnMages(conn, PlayerIndex.Player1);
-                    SpawnKingss(conn, PlayerIndex.Player1);
+                    SpawnPawns(conn, PlayerIndex.Player1, ref pieceIndex);
+                    SpawnBishops(conn, PlayerIndex.Player1, ref pieceIndex);
+                    SpawnRooks(conn, PlayerIndex.Player1, ref pieceIndex);
+                    SpawnKnights(conn, PlayerIndex.Player1, ref pieceIndex);
+                    SpawnMages(conn, PlayerIndex.Player1, ref pieceIndex);
+                    SpawnKingss(conn, PlayerIndex.Player1, ref pieceIndex);
                     break;
                 case PlayerIndex.Player2:
-                    SpawnPawns(conn, PlayerIndex.Player2);
-                    SpawnBishops(conn, PlayerIndex.Player2);
-                    SpawnRooks(conn, PlayerIndex.Player2);
-                    SpawnKnights(conn, PlayerIndex.Player2);
-                    SpawnMages(conn, PlayerIndex.Player2);
-                    SpawnKingss(conn, PlayerIndex.Player2);
+                    SpawnPawns(conn, PlayerIndex.Player2, ref pieceIndex);
+                    SpawnBishops(conn, PlayerIndex.Player2, ref pieceIndex);
+                    SpawnRooks(conn, PlayerIndex.Player2, ref pieceIndex);
+                    SpawnKnights(conn, PlayerIndex.Player2, ref pieceIndex);
+                    SpawnMages(conn, PlayerIndex.Player2, ref pieceIndex);
+                    SpawnKingss(conn, PlayerIndex.Player2, ref pieceIndex);
                     break;
                 default:
                     break;
             }
         }
 
-        private void SpawnPawns(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnPawns(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
             for (int i = 0; i <= 7; i++)
             {
-                SpawnPiece(i, playerIndex, CurrentPiece.Pawn, conn);
+                GameObject pieceGo = SpawnPiece(i, playerIndex, CurrentPiece.Pawn, conn);
+                Piece piece = null;
+                int pieceId = AssignPieceId(pieceGo, ref pieceIndex, playerIndex, ref piece);
+
+                Pawn pawn = piece as Pawn;
+                pawn.InitPawnPiece();
+                pawn.SetPieceColour(playerIndex);
+
+                AssignStartingPositions(pieceId, i, CurrentPiece.Pawn, playerIndex);
             }
         }
 
-        private void SpawnBishops(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnBishops(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
-            for (int i = 0; i <= 1; i++)
-            {
-                SpawnPiece(i, playerIndex, CurrentPiece.Bishop, conn);
-            }
+            GameObject bishop1 = SpawnPiece(0, playerIndex, CurrentPiece.Bishop, conn);
+            Piece piece1 = null;
+            int pieceId = AssignPieceId(bishop1, ref pieceIndex, playerIndex, ref piece1);
+            AssignStartingPositions(pieceId, 0, CurrentPiece.Bishop, playerIndex);
+
+            Bishop b1 = piece1 as Bishop;
+            b1.SetPieceColour(playerIndex);
+
+            GameObject bishop2 = SpawnPiece(1, playerIndex, CurrentPiece.Bishop, conn);
+            Piece piece2 = null;
+            int pieceId2 = AssignPieceId(bishop2, ref pieceIndex, playerIndex, ref piece2);
+            AssignStartingPositions(pieceId2, 7, CurrentPiece.Bishop, playerIndex);
+
+            Bishop b2 = piece2 as Bishop;
+            b2.SetPieceColour(playerIndex);
         }
 
-        private void SpawnRooks(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnRooks(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
-            for (int i = 0; i <= 1; i++)
-            {
-                SpawnPiece(i, playerIndex, CurrentPiece.Rook, conn);
-            }
+            GameObject rook1 = SpawnPiece(0, playerIndex, CurrentPiece.Rook, conn);
+            Piece piece1 = null;
+            int pieceId = AssignPieceId(rook1, ref pieceIndex, playerIndex, ref piece1);
+            AssignStartingPositions(pieceId, 2, CurrentPiece.Rook, playerIndex);
+
+            Rook r1 = piece1 as Rook;
+            r1.SetPieceColour(playerIndex);
+
+            GameObject rook2 = SpawnPiece(1, playerIndex, CurrentPiece.Rook, conn);
+            Piece piece2 = null;
+            int pieceId2 = AssignPieceId(rook2, ref pieceIndex, playerIndex, ref piece2);
+            AssignStartingPositions(pieceId2, 5, CurrentPiece.Rook, playerIndex);
+
+            Rook r2 = piece2 as Rook;
+            r2.SetPieceColour(playerIndex);
         }
 
-        private void SpawnKnights(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnKnights(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
-            for (int i = 0; i <= 1; i++)
-            {
-                SpawnPiece(i, playerIndex, CurrentPiece.Knight, conn);
-            }
+            GameObject knight1 = SpawnPiece(0, playerIndex, CurrentPiece.Knight, conn);
+            Piece piece1 = null;
+            int pieceId = AssignPieceId(knight1, ref pieceIndex, playerIndex, ref piece1);
+            AssignStartingPositions(pieceId, 1, CurrentPiece.Knight, playerIndex);
+
+            Knight k1 = piece1 as Knight;
+            k1.SetPieceColour(playerIndex);
+
+            GameObject knight2 = SpawnPiece(1, playerIndex, CurrentPiece.Knight, conn);
+            Piece piece2 = null;
+            int pieceId2 = AssignPieceId(knight2, ref pieceIndex, playerIndex, ref piece2);
+            AssignStartingPositions(pieceId2, 6, CurrentPiece.Knight, playerIndex);
+
+            Knight k2 = piece2 as Knight;
+            k2.SetPieceColour(playerIndex);
         }
 
-        private void SpawnMages(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnMages(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
-            for (int i = 0; i == 0; i++)
-            {
-                SpawnPiece(i, playerIndex, CurrentPiece.Mage, conn);
-            }
+            GameObject mage = SpawnPiece(0, playerIndex, CurrentPiece.Mage, conn);
+            Piece piece = null;
+            int pieceId = AssignPieceId(mage, ref pieceIndex, playerIndex, ref piece);
+            AssignStartingPositions(pieceId, 3, CurrentPiece.Mage, playerIndex);
+
+            Mage m = piece as Mage;
+            m.SetPieceColour(playerIndex);
         }
 
-        private void SpawnKingss(NetworkConnection conn, PlayerIndex playerIndex)
+        private void SpawnKingss(NetworkConnection conn, PlayerIndex playerIndex, ref int pieceIndex)
         {
-            for (int i = 0; i == 0; i++)
-            {
-                SpawnPiece(i, playerIndex, CurrentPiece.King, conn);
-            }
+            GameObject king = SpawnPiece(0, playerIndex, CurrentPiece.King, conn);
+            Piece piece = null;
+            int pieceId = AssignPieceId(king, ref pieceIndex, playerIndex, ref piece);
+            AssignStartingPositions(pieceId, 4, CurrentPiece.King, playerIndex);
+
+            King k = piece as King;
+            k.SetPieceColour(playerIndex);
         }
+
 
         private GameObject SpawnPiece(int pieceIndex, PlayerIndex playerIndex, CurrentPiece piece, NetworkConnection conn)
         {
@@ -176,56 +306,58 @@ namespace ChessPrototype.Base
             switch (playerIndex)
             {
                 case PlayerIndex.Player1:
-                    switch (piece)
-                    {
-                        case CurrentPiece.Empty:
-                            break;
-                        case CurrentPiece.Pawn:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.PAWN_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        case CurrentPiece.Knight:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KNIGHT_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        case CurrentPiece.Rook:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.ROOK_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        case CurrentPiece.Bishop:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.BISHOP_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        case CurrentPiece.Mage:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.MAGE_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        case CurrentPiece.King:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KING_SPAWN_POSITIONS_PLAYER_1[pieceIndex], Quaternion.identity);
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                case PlayerIndex.Player2:
-                    Quaternion rotation = Quaternion.Euler(GameConstants.PIECE_ROTATION_PLAYER2.x, GameConstants.PIECE_ROTATION_PLAYER2.y, GameConstants.PIECE_ROTATION_PLAYER2.z);
+                    Quaternion rot_player1 = Quaternion.Euler(GameConstants.LOOK_DIRECTION_PLAYER1.x, GameConstants.LOOK_DIRECTION_PLAYER1.y, GameConstants.LOOK_DIRECTION_PLAYER1.z);
 
                     switch (piece)
                     {
                         case CurrentPiece.Empty:
                             break;
                         case CurrentPiece.Pawn:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.PAWN_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.PAWN_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
                             break;
                         case CurrentPiece.Knight:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KNIGHT_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KNIGHT_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
                             break;
                         case CurrentPiece.Rook:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.ROOK_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.ROOK_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
                             break;
                         case CurrentPiece.Bishop:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.BISHOP_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.BISHOP_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
                             break;
                         case CurrentPiece.Mage:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.MAGE_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.MAGE_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
                             break;
                         case CurrentPiece.King:
-                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KING_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rotation);
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KING_SPAWN_POSITIONS_PLAYER_1[pieceIndex], rot_player1);
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case PlayerIndex.Player2:
+                    Quaternion rot_player2 = Quaternion.Euler(GameConstants.LOOK_DIRECTION_PLAYER2.x, GameConstants.LOOK_DIRECTION_PLAYER2.y, GameConstants.LOOK_DIRECTION_PLAYER2.z);
+
+                    switch (piece)
+                    {
+                        case CurrentPiece.Empty:
+                            break;
+                        case CurrentPiece.Pawn:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.PAWN_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
+                            break;
+                        case CurrentPiece.Knight:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KNIGHT_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
+                            break;
+                        case CurrentPiece.Rook:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.ROOK_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
+                            break;
+                        case CurrentPiece.Bishop:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.BISHOP_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
+                            break;
+                        case CurrentPiece.Mage:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.MAGE_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
+                            break;
+                        case CurrentPiece.King:
+                            go = Instantiate(boardManager.GetPiecePrefab(piece), GameConstants.KING_SPAWN_POSITIONS_PLAYER_2[pieceIndex], rot_player2);
                             break;
                         default:
                             break;
@@ -238,6 +370,62 @@ namespace ChessPrototype.Base
             NetworkServer.Spawn(go, conn);
 
             return go;
+        }
+
+        private int AssignPieceId(GameObject pieceGo, ref int pieceIndex, PlayerIndex player, ref Piece piece)
+        {
+            piece = pieceGo.GetComponent<Piece>();
+            piece.pieceId = pieceIndex;
+            piece.player = player;
+            pieceIndex++;
+
+            pieces.Add(piece);
+
+            return piece.pieceId;
+        }
+
+        private void AssignStartingPositions(int pieceId, int pieceIndex, CurrentPiece piece, PlayerIndex player)
+        {
+            Tile tile = null;
+
+            switch (player)
+            {
+                case PlayerIndex.Player1:
+                    if (piece == CurrentPiece.Pawn)
+                    {
+                        Tuple<int, int> tilePosPawn = new Tuple<int, int>(1, pieceIndex);
+                        SetTileValuesOnStart(tile, tilePosPawn, piece, player, pieceId);
+                    }
+                    else
+                    {
+                        Tuple<int, int> tilePos = new Tuple<int, int>(0, pieceIndex);
+                        SetTileValuesOnStart(tile, tilePos, piece, player, pieceId);
+                    }
+                    break;
+                case PlayerIndex.Player2:
+                    if (piece == CurrentPiece.Pawn)
+                    {
+                        Tuple<int, int> tilePosPawn = new Tuple<int, int>(6, pieceIndex);
+                        SetTileValuesOnStart(tile, tilePosPawn, piece, player, pieceId);
+                    }
+                    else
+                    {
+                        Tuple<int, int> tilePos = new Tuple<int, int>(7, pieceIndex);
+                        SetTileValuesOnStart(tile, tilePos, piece, player, pieceId);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetTileValuesOnStart(Tile tile, Tuple<int, int> tilePos, CurrentPiece piece, PlayerIndex player, int pieceId)
+        {
+            tile = boardManager.tilePositions[tilePos.Item1, tilePos.Item2];
+
+            tile.networkPiece = piece;
+            tile.occupyingPlayer = player;
+            tile.currentPieceId = pieceId;
         }
 
         public class ClientSpawnPlayerRequest : MessageBase { public bool isHost; }
