@@ -18,7 +18,7 @@ namespace ChessPrototype.Pieces
             isFirstMove = true;
         }
 
-        public override bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile)
+        public override bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile, bool isHighlightValidation)
         {
             bool success = false;
 
@@ -26,14 +26,14 @@ namespace ChessPrototype.Pieces
             Tuple<int, int> originTileIndex = board.GetTileIndexByName(originTilePos);
             Tuple<int, int> targetTileIndex = board.GetTileIndexByName(targetTilePos);
 
-            bool isTargetTileOccupied = gameManager.boardManager.IsTargetTileOccupied(targetTile.tilePos);
+            bool isTargetTileEmpty = gameManager.boardManager.IsTargetTileEmpty(targetTile.tilePos);
             bool isTargetTileOccupiedByOpposingPlayer = gameManager.boardManager.IsTargetTileOccupiedByOpposingPlayer(targetTile.tilePos, originTile.occupyingPlayer);
 
             switch (originTile.occupyingPlayer)
             {
                 case PlayerIndex.Player1:
                     // If the target tile is on the same column as the origin tile and the target tile is not occupied.
-                    if (targetTileIndex.Item2 == originTileIndex.Item2 && !isTargetTileOccupied)
+                    if (targetTileIndex.Item2 == originTileIndex.Item2)
                     {
                         // Allow to move two rows on the first move.
                         if (isFirstMove)
@@ -45,11 +45,11 @@ namespace ChessPrototype.Pieces
                                 Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
 
                                 // If first stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
+                                if (gameManager.boardManager.IsTargetTileEmpty(firstStopTile.tilePos))
                                 {
-                                    if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
+                                    // Can only move forward one square if the tile is not occupied.
+                                    if (isTargetTileEmpty)
                                     {
-                                        isFirstMove = false;
                                         success = true;
                                     }
                                 }
@@ -60,7 +60,8 @@ namespace ChessPrototype.Pieces
                             // Otherwise only ever move one row.
                             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 1))
                             {
-                                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
+                                // Can only move forward one square if the tile is not occupied.
+                                if (isTargetTileEmpty)
                                 {
                                     success = true;
                                 }
@@ -73,41 +74,66 @@ namespace ChessPrototype.Pieces
                         // If the target tile is one column to the left.
                         if (targetTileIndex.Item2 == (originTileIndex.Item2 - 1))
                         {
-                            // And the target tile is empty or occupied by an enemy and only one row up from the current row.
-                            if (isTargetTileOccupied && targetTileIndex.Item1 == (originTileIndex.Item1 + 1))
+                            // If the target tile is one row up.
+                            if (targetTileIndex.Item1 == (originTileIndex.Item1 + 1))
                             {
-                                success = true;
+                                // The target tile is occupied by an enemy.
+                                if (isTargetTileOccupiedByOpposingPlayer)
+                                {
+                                    success = true;
+                                }
                             }
                         }
 
                         // If the target tile is one column to the right.
                         if (targetTileIndex.Item2 == (originTileIndex.Item2 + 1))
                         {
-                            // And the target tile is empty or occupied by an enemy and only one row up from the current row.
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer && targetTileIndex.Item1 == (originTileIndex.Item1 + 1))
+                            // If the target tile is one row up.
+                            if (targetTileIndex.Item1 == (originTileIndex.Item1 + 1))
                             {
-                                success = true;
+                                // And the target tile is empty or occupied by an enemy and only one row up from the current row.
+                                if (isTargetTileOccupiedByOpposingPlayer)
+                                {
+                                    success = true;
+                                }
                             }
                         }
-                      
+
                     }
                     break;
                 case PlayerIndex.Player2:
-                    if (targetTileIndex.Item2 == originTileIndex.Item2 && !isTargetTileOccupied)
+                    if (targetTileIndex.Item2 == originTileIndex.Item2)
                     {
+                        // Allow to move two rows on the first move.
                         if (isFirstMove)
                         {
                             if (targetTileIndex.Item1 == (originTileIndex.Item1 - 1) || targetTileIndex.Item1 == (originTileIndex.Item1 - 2))
                             {
-                                isFirstMove = false;
-                                success = true;
+                                // Check first stop.
+                                Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), originTileIndex.Item2);
+                                Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
+
+                                // If first stop is unoccupied then finally check target tile.
+                                if (gameManager.boardManager.IsTargetTileEmpty(firstStopTile.tilePos))
+                                {
+                                    // Can only move forward one square if the tile is not occupied.
+                                    if (isTargetTileEmpty)
+                                    {
+                                        success = true;
+                                    }
+                                }
                             }
                         }
                         else
                         {
+                            // Otherwise only ever move one row.
                             if (targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
                             {
-                                success = true;
+                                // Can only move forward one square if the tile is not occupied.
+                                if (isTargetTileEmpty)
+                                {
+                                    success = true;
+                                }
                             }
                         }
                     }
@@ -116,20 +142,28 @@ namespace ChessPrototype.Pieces
                         // If the target tile is one column to the left.
                         if (targetTileIndex.Item2 == (originTileIndex.Item2 - 1))
                         {
-                            // And the target tile is empty or occupied by an enemy and only one row down from the current row.
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer && targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
+                            // If the target tile is one row down.
+                            if (targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
                             {
-                                success = true;
+                                // The target tile is occupied by an enemy.
+                                if (isTargetTileOccupiedByOpposingPlayer)
+                                {
+                                    success = true;
+                                }
                             }
                         }
 
                         // If the target tile is one column to the right.
                         if (targetTileIndex.Item2 == (originTileIndex.Item2 + 1))
                         {
-                            // And the target tile is empty or occupied by an enemy and only one row down from the current row.
-                            if (isTargetTileOccupied && targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
+                            // If the target tile is one row down.
+                            if (targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
                             {
-                                success = true;
+                                // The target tile is occupied by an enemy.
+                                if (isTargetTileOccupiedByOpposingPlayer)
+                                {
+                                    success = true;
+                                }
                             }
                         }
                     }

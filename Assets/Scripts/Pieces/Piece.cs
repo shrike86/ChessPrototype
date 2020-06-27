@@ -21,6 +21,12 @@ namespace ChessPrototype.Pieces
         [SyncVar]
         public PlayerIndex player;
         [SyncVar]
+        public TilePositionName currentTile;
+        [SyncVar]
+        public TilePositionName previousTile;
+        [SyncVar]
+        public TilePositionName newTile;
+        [SyncVar]
         public bool isDead;
 
         public GameManager gameManager;
@@ -34,7 +40,7 @@ namespace ChessPrototype.Pieces
             isDead = false;
         }
 
-        public abstract bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile);
+        public abstract bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile, bool isHighlightValidation);
 
         public void SetPieceColour(PlayerIndex player)
         {
@@ -43,16 +49,75 @@ namespace ChessPrototype.Pieces
 
         public void SetIsDead(bool isDead)
         {
-            CmdSetIsDead(isDead);
-            StartCoroutine(UnspawnAfterPeriod());
+            if (!isServer)
+                return;
+
+            TargetClearHighlightedTilesOnDeath(GetComponent<NetworkIdentity>().connectionToClient);
+
+            this.isDead = true;
+            StartCoroutine(InvokeDeathAfterPeriod());
         }
 
-        private IEnumerator UnspawnAfterPeriod()
+        public void AssignAttackingingPiecePosition(bool isWinner)
+        {
+            StartCoroutine(AssignNewPositionAfterPeriod(isWinner));
+        }
+
+        [TargetRpc]
+        private void TargetClearHighlightedTilesOnDeath(NetworkConnection conn)
+        {
+            // Clear the tile highlights for that piece when it dies.
+            Tile tile = gameManager.boardManager.GetTileByPositionName(currentTile);
+            gameManager.boardManager.HighlightValidTiles(tile, false);
+        }
+
+        private IEnumerator InvokeDeathAfterPeriod()
         {
             yield return new WaitForSeconds(1.5f);
+
             OnDeath?.Invoke(this);
+            RpcInvokeDeathOnClient();
             NetworkServer.Destroy(this.gameObject);
+            //StartCoroutine(DestroyAfterPeriod());
+
         }
+
+        private IEnumerator DestroyAfterPeriod()
+        {
+            yield return new WaitForSeconds(0.5f);
+
+        }
+
+
+        [ClientRpc]
+        private void RpcInvokeDeathOnClient()
+        {
+            OnDeath?.Invoke(this);
+        }
+
+        private IEnumerator AssignNewPositionAfterPeriod(bool isVictor)
+        {
+            yield return new WaitForSeconds(0.3f);
+
+            NetworkGameManager network = NetworkManager.singleton as NetworkGameManager;
+
+            Tile originTile = gameManager.boardManager.GetTileByPositionName(previousTile);
+            Tile targetTile = gameManager.boardManager.GetTileByPositionName(newTile);
+
+            if (isVictor)
+            {
+
+                network.AssignPieceToTile(targetTile.tilePos, originTile.networkPiece, originTile.occupyingPlayer, originTile.currentPieceId);
+                network.UnassignPieceFromTile(originTile.tilePos);
+
+                currentTile = targetTile.tilePos;
+            }
+            else
+            {
+                // move back to the previous tile.
+            }
+        }
+
 
         [ClientRpc]
         private void RpcSetPieceColour(PlayerIndex player)
@@ -72,12 +137,6 @@ namespace ChessPrototype.Pieces
             }
         }
 
-        [Command(ignoreAuthority = true)]
-        public void CmdSetIsDead(bool isDead)
-        {
-            this.isDead = isDead;
-        }
-
         public Piece GetPieceById(int id)
         {
             Piece piece = null;
@@ -88,6 +147,36 @@ namespace ChessPrototype.Pieces
             }
 
             return piece;
+        }
+
+        public PieceType GetPieceType(Piece piece)
+        {
+            if (piece is Pawn)
+            {
+                return PieceType.Pawn;
+            }
+            else if (piece is Bishop)
+            {
+                return PieceType.Bishop;
+            }
+            else if (piece is Knight)
+            {
+                return PieceType.Knight;
+            }
+            else if (piece is Rook)
+            {
+                return PieceType.Rook;
+            }
+            else if (piece is Mage)
+            {
+                return PieceType.Mage;
+            }
+            else if (piece is King)
+            {
+                return PieceType.King;
+            }
+
+            return PieceType.Empty;
         }
     }
 }

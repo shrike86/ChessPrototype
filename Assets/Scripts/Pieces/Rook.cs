@@ -8,7 +8,7 @@ namespace ChessPrototype.Pieces
 {
     public class Rook : Piece
     {
-        public override bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile)
+        public override bool ValidateMove(TilePositionName originTilePos, TilePositionName targetTilePos, Tile originTile, Tile targetTile, bool isHighlightValidation)
         {
             bool success = false;
 
@@ -16,48 +16,54 @@ namespace ChessPrototype.Pieces
             Tuple<int, int> originTileIndex = board.GetTileIndexByName(originTilePos);
             Tuple<int, int> targetTileIndex = board.GetTileIndexByName(targetTilePos);
 
-            bool isTargetTileOccupied = gameManager.boardManager.IsTargetTileOccupied(targetTile.tilePos);
+            bool isTargetTileEmpty = gameManager.boardManager.IsTargetTileEmpty(targetTile.tilePos);
             bool isTargetTileOccupiedByOpposingPlayer = gameManager.boardManager.IsTargetTileOccupiedByOpposingPlayer(targetTile.tilePos, originTile.occupyingPlayer);
 
             // If target tile is one row up or one row down.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 1) || targetTileIndex.Item1 == (originTileIndex.Item1 - 1))
             {
-                success = ValidateOnePositionMove(success, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateOnePositionMove(success, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
             }
             // If target tile is either two rows up or two rows down.
             else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 2) || targetTileIndex.Item1 == (originTileIndex.Item1 - 2))
             {
-                success = ValidateTwoPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateTwoPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
 
             }
             // If target tile is either three rows up or three rows down.
             else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 3) || targetTileIndex.Item1 == (originTileIndex.Item1 - 3))
             {
-                success = ValidateThreePositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateThreePositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
             }
             // If target tile is either four rows up or four rows down.
             else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 4) || targetTileIndex.Item1 == (originTileIndex.Item1 - 4))
             {
-                success = ValidateFourPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateFourPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
             }
             // If target tile is either five rows up or five rows down.
             else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 5) || targetTileIndex.Item1 == (originTileIndex.Item1 - 5))
             {
-                success = ValidateFivePositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateFivePositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
             }
             // If target tile is either six rows up or six rows down.
             else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 6) || targetTileIndex.Item1 == (originTileIndex.Item1 - 6))
             {
-                success = ValidateSixPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileOccupied, isTargetTileOccupiedByOpposingPlayer);
+                success = ValidateSixPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
             }
+            // If target tile is either seven rows up or seven rows down.
+            else if (targetTileIndex.Item1 == (originTileIndex.Item1 + 7) || targetTileIndex.Item1 == (originTileIndex.Item1 - 7))
+            {
+                success = ValidateSevenPositionMove(success, board, originTileIndex, targetTileIndex, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+            }
+
             return success;
         }
 
-        private bool ValidateOnePositionMove(bool success, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateOnePositionMove(bool success, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             if (targetTileIndex.Item2 == (originTileIndex.Item2 + 1) || targetTileIndex.Item2 == (originTileIndex.Item2 - 1))
             {
-                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
+                if (isTargetTileEmpty || isTargetTileOccupiedByOpposingPlayer)
                 {
                     success = true;
                 }
@@ -66,7 +72,7 @@ namespace ChessPrototype.Pieces
             return success;
         }
 
-        private bool ValidateTwoPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateTwoPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             // If target tile is two rows up.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 2))
@@ -77,34 +83,12 @@ namespace ChessPrototype.Pieces
                     // If target tile is two columns to the right.
                     if (targetTileIndex.Item2 == (originTileIndex.Item2 + 2))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is unoccupied then finally check target tile.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                            {
-                                success = true;
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 2, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is two columns to the left.
                     else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 2))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is unoccupied then finally check target tile.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                            {
-                                success = true;
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 2, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -116,36 +100,14 @@ namespace ChessPrototype.Pieces
                 if (targetTileIndex.Item2 == (originTileIndex.Item2 + 2) || targetTileIndex.Item2 == (originTileIndex.Item2 - 2))
                 {
                     // If target tile is two columns to the right.
-                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 2))
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 2))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is unoccupied then finally check target tile.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                            {
-                                success = true;
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 2, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is two columns to the left.
-                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 2))
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 2))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is unoccupied then finally check target tile.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                            {
-                                success = true;
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 2, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -153,7 +115,7 @@ namespace ChessPrototype.Pieces
             return success;
         }
 
-        private bool ValidateThreePositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateThreePositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             // If target tile is three rows up.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 3))
@@ -164,50 +126,12 @@ namespace ChessPrototype.Pieces
                     // If target tile is three columns to the right.
                     if (targetTileIndex.Item2 == (originTileIndex.Item2 + 3))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                {
-                                    success = true;
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 3, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is three columns to the left.
                     else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 3))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                {
-                                    success = true;
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 3, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -219,52 +143,14 @@ namespace ChessPrototype.Pieces
                 if (targetTileIndex.Item2 == (originTileIndex.Item2 + 3) || targetTileIndex.Item2 == (originTileIndex.Item2 - 3))
                 {
                     // If target tile is three columns to the right.
-                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 3))
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 3))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                {
-                                    success = true;
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 3, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is three columns to the left.
-                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 3))
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 3))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                {
-                                    success = true;
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 3, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -273,7 +159,7 @@ namespace ChessPrototype.Pieces
             return success;
         }
 
-        private bool ValidateFourPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateFourPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             // If target tile is four rows up.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 4))
@@ -284,64 +170,12 @@ namespace ChessPrototype.Pieces
                     // If target tile is four columns to the right.
                     if (targetTileIndex.Item2 == (originTileIndex.Item2 + 4))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                    {
-                                        success = true;
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 4, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is four columns to the left.
                     else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 4))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                    {
-                                        success = true;
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 4, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -353,66 +187,14 @@ namespace ChessPrototype.Pieces
                 if (targetTileIndex.Item2 == (originTileIndex.Item2 + 4) || targetTileIndex.Item2 == (originTileIndex.Item2 - 4))
                 {
                     // If target tile is four columns to the right.
-                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 4))
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 4))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                    {
-                                        success = true;
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 4, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is four columns to the left.
-                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 4))
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 4))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                    {
-                                        success = true;
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 4, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -420,7 +202,7 @@ namespace ChessPrototype.Pieces
             return success;
         }
 
-        private bool ValidateFivePositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateFivePositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             // If target tile is five rows up.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 5))
@@ -431,82 +213,12 @@ namespace ChessPrototype.Pieces
                     // If target tile is five columns to the right.
                     if (targetTileIndex.Item2 == (originTileIndex.Item2 + 5))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 4), (originTileIndex.Item2 + 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    // If fourth stop is unoccupied then finally check target tile.
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                        {
-                                            success = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 5, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is five columns to the left.
                     else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 5))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 4), (originTileIndex.Item2 - 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    // If fourth stop is unoccupied then finally check target tile.
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                        {
-                                            success = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 5, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -518,80 +230,14 @@ namespace ChessPrototype.Pieces
                 if (targetTileIndex.Item2 == (originTileIndex.Item2 + 5) || targetTileIndex.Item2 == (originTileIndex.Item2 - 5))
                 {
                     // If target tile is five columns to the right.
-                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 5))
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 5))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 4), (originTileIndex.Item2 + 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    // If fourth stop is unoccupied then finally check target tile.
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                        {
-                                            success = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 5, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is five columns to the left.
-                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 5))
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 5))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 4), (originTileIndex.Item2 - 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    // If fourth stop is unoccupied then finally check target tile.
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                        {
-                                            success = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 5, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -599,7 +245,7 @@ namespace ChessPrototype.Pieces
             return success;
         }
 
-        private bool ValidateSixPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileOccupied, bool isTargetTileOccupiedByOpposingPlayer)
+        private bool ValidateSixPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
         {
             // If target tile is six rows up.
             if (targetTileIndex.Item1 == (originTileIndex.Item1 + 6))
@@ -610,96 +256,12 @@ namespace ChessPrototype.Pieces
                     // If target tile is six columns to the right.
                     if (targetTileIndex.Item2 == (originTileIndex.Item2 + 6))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 4), (originTileIndex.Item2 + 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        // Check fifth stop.
-                                        Tuple<int, int> fifthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 5), (originTileIndex.Item2 + 5));
-                                        Tile fifthStopTile = board.GetTileByIndex(fifthStopTileIndex.Item1, fifthStopTileIndex.Item2);
-
-                                        // If fifth stop is unoccupied then finally check target tile.
-                                        if (!gameManager.boardManager.IsTargetTileOccupied(fifthStopTile.tilePos))
-                                        {
-                                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                            {
-                                                success = true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 6, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is six columns to the left.
                     else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 6))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            // If second stop is unoccupied then finally check target tile.
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                // If third stop is unoccupied then finally check target tile.
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 4), (originTileIndex.Item2 - 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        // Check fifth stop.
-                                        Tuple<int, int> fifthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 + 5), (originTileIndex.Item2 - 5));
-                                        Tile fifthStopTile = board.GetTileByIndex(fifthStopTileIndex.Item1, fifthStopTileIndex.Item2);
-
-                                        // If fifth stop is unoccupied then finally check target tile.
-                                        if (!gameManager.boardManager.IsTargetTileOccupied(fifthStopTile.tilePos))
-                                        {
-                                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                            {
-                                                success = true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateForwardSteps(board, 1, 6, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
@@ -711,99 +273,142 @@ namespace ChessPrototype.Pieces
                 if (targetTileIndex.Item2 == (originTileIndex.Item2 + 6) || targetTileIndex.Item2 == (originTileIndex.Item2 - 6))
                 {
                     // If target tile is six columns to the right.
-                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 6))
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 6))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 + 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 + 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 + 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 4), (originTileIndex.Item2 + 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        // Check fifth stop.
-                                        Tuple<int, int> fifthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 5), (originTileIndex.Item2 + 5));
-                                        Tile fifthStopTile = board.GetTileByIndex(fifthStopTileIndex.Item1, fifthStopTileIndex.Item2);
-
-                                        // If fifth stop is unoccupied then finally check target tile.
-                                        if (!gameManager.boardManager.IsTargetTileOccupied(fifthStopTile.tilePos))
-                                        {
-                                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                            {
-                                                success = true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 6, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                     // If target tile is six columns to the left.
-                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 6))
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 6))
                     {
-                        // Check first stop.
-                        Tuple<int, int> firstStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 1), (originTileIndex.Item2 - 1));
-                        Tile firstStopTile = board.GetTileByIndex(firstStopTileIndex.Item1, firstStopTileIndex.Item2);
-
-                        // If first stop is not occupied.
-                        if (!gameManager.boardManager.IsTargetTileOccupied(firstStopTile.tilePos))
-                        {
-                            // Check second stop.
-                            Tuple<int, int> secondStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 2), (originTileIndex.Item2 - 2));
-                            Tile secondStopTile = board.GetTileByIndex(secondStopTileIndex.Item1, secondStopTileIndex.Item2);
-
-                            if (!gameManager.boardManager.IsTargetTileOccupied(secondStopTile.tilePos))
-                            {
-                                // Check third stop.
-                                Tuple<int, int> thirdStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 3), (originTileIndex.Item2 - 3));
-                                Tile thirdStopTile = board.GetTileByIndex(thirdStopTileIndex.Item1, thirdStopTileIndex.Item2);
-
-                                if (!gameManager.boardManager.IsTargetTileOccupied(thirdStopTile.tilePos))
-                                {
-                                    // Check fourth stop.
-                                    Tuple<int, int> fourthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 4), (originTileIndex.Item2 - 4));
-                                    Tile fourthStopTile = board.GetTileByIndex(fourthStopTileIndex.Item1, fourthStopTileIndex.Item2);
-
-                                    if (!gameManager.boardManager.IsTargetTileOccupied(fourthStopTile.tilePos))
-                                    {
-                                        // Check fifth stop.
-                                        Tuple<int, int> fifthStopTileIndex = new Tuple<int, int>((originTileIndex.Item1 - 5), (originTileIndex.Item2 - 5));
-                                        Tile fifthStopTile = board.GetTileByIndex(fifthStopTileIndex.Item1, fifthStopTileIndex.Item2);
-
-                                        // If fifth stop is unoccupied then finally check target tile.
-                                        if (!gameManager.boardManager.IsTargetTileOccupied(fifthStopTile.tilePos))
-                                        {
-                                            if (!isTargetTileOccupied || isTargetTileOccupiedByOpposingPlayer)
-                                            {
-                                                success = true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        success = ValidateBackwardSteps(board, 1, 6, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
                     }
                 }
             }
 
             return success;
         }
+
+        private bool ValidateSevenPositionMove(bool success, BoardManager board, Tuple<int, int> originTileIndex, Tuple<int, int> targetTileIndex, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
+        {
+            // If target tile is seven rows up.
+            if (targetTileIndex.Item1 == (originTileIndex.Item1 + 7))
+            {
+                // If target tile is either seven columns to the right or seven to the left.
+                if (targetTileIndex.Item2 == (originTileIndex.Item2 + 7) || targetTileIndex.Item2 == (originTileIndex.Item2 - 7))
+                {
+                    // If target tile is seven columns to the right.
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 + 7))
+                    {
+                        success = ValidateForwardSteps(board, 1, 7, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                    }
+                    // If target tile is seven columns to the left.
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 - 7))
+                    {
+                        success = ValidateForwardSteps(board, 1, 7, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                    }
+                }
+            }
+
+            // If target tile is seven rows down.
+            if (targetTileIndex.Item1 == (originTileIndex.Item1 - 7))
+            {
+                // If target tile is either seven columns to the right or seven to the left.
+                if (targetTileIndex.Item2 == (originTileIndex.Item2 + 7) || targetTileIndex.Item2 == (originTileIndex.Item2 - 7))
+                {
+                    // If target tile is seven columns to the right.
+                    if (targetTileIndex.Item2 == (originTileIndex.Item2 - 7))
+                    {
+                        success = ValidateBackwardSteps(board, 1, 7, originTileIndex, false, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                    }
+                    // If target tile is seven columns to the left.
+                    else if (targetTileIndex.Item2 == (originTileIndex.Item2 + 7))
+                    {
+                        success = ValidateBackwardSteps(board, 1, 7, originTileIndex, true, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        private bool ValidateForwardSteps(BoardManager board, int index, int moves, Tuple<int, int> originTileIndex, bool isLeft, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
+        {
+            bool valid = false;
+
+            Tuple<int, int> stopIndex = new Tuple<int, int>(0, 0);
+
+            if (!isLeft)
+            {
+                stopIndex = new Tuple<int, int>((originTileIndex.Item1 + index), (originTileIndex.Item2 + index));
+            }
+            else
+            {
+                stopIndex = new Tuple<int, int>((originTileIndex.Item1 + index), (originTileIndex.Item2 - index));
+            }
+
+            Tile stopTile = board.GetTileByIndex(stopIndex.Item1, stopIndex.Item2);
+
+            // Tiles on the way to the final tile must be empty.
+            if (index < moves)
+            {
+                if (gameManager.boardManager.IsTargetTileEmpty(stopTile.tilePos))
+                {
+                    index++;
+
+                    valid = ValidateForwardSteps(board, index, moves, originTileIndex, isLeft, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                }
+            }
+            // When you get to the final stop then it must be empty or occupied by an enemy player.
+            else if (index == moves)
+            {
+                if (isTargetTileEmpty || isTargetTileOccupiedByOpposingPlayer)
+                {
+                    valid = true;
+                }
+            }
+
+            return valid;
+        }
+
+        private bool ValidateBackwardSteps(BoardManager board, int index, int moves, Tuple<int, int> originTileIndex, bool isLeft, bool isTargetTileEmpty, bool isTargetTileOccupiedByOpposingPlayer)
+        {
+            bool valid = false;
+
+            Tuple<int, int> stopIndex = new Tuple<int, int>(0, 0);
+
+            if (!isLeft)
+            {
+                stopIndex = new Tuple<int, int>((originTileIndex.Item1 - index), (originTileIndex.Item2 - index));
+            }
+            else
+            {
+                stopIndex = new Tuple<int, int>((originTileIndex.Item1 - index), (originTileIndex.Item2 + index));
+            }
+
+            Tile stopTile = board.GetTileByIndex(stopIndex.Item1, stopIndex.Item2);
+
+            // Tiles on the way to the final tile must be empty.
+            if (index < moves)
+            {
+                if (gameManager.boardManager.IsTargetTileEmpty(stopTile.tilePos))
+                {
+                    index++;
+
+                    valid = ValidateBackwardSteps(board, index, moves, originTileIndex, isLeft, isTargetTileEmpty, isTargetTileOccupiedByOpposingPlayer);
+                }
+            }
+            // When you get to the final stop then it must be empty or occupied by an enemy player.
+            else if (index == moves)
+            {
+                if (isTargetTileEmpty || isTargetTileOccupiedByOpposingPlayer)
+                {
+                    valid = true;
+                }
+            }
+
+            return valid;
+        }
+
+
     }
 }

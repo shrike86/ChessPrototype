@@ -1,7 +1,10 @@
-﻿using Mirror;
+﻿using ChessPrototype.Pieces;
+using ChessPrototype.UI;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ChessPrototype.Base
@@ -9,6 +12,7 @@ namespace ChessPrototype.Base
     public class BoardManager : MonoBehaviour
     {
         public Tile[,] tilePositions;
+        public Tile[] tiles;
 
         public GameObject pawnPrefab;
         public GameObject knightPrefab;
@@ -17,19 +21,33 @@ namespace ChessPrototype.Base
         public GameObject magePrefab;
         public GameObject kingPrefab;
 
+        private NetworkGameManager network;
+
+        public Material highlightMat;
+        public Material defaultMat;
+
         private void Start()
         {
             tilePositions = new Tile[8, 8];
-            Tile[] tiles = GetComponentsInChildren<Tile>();
+            tiles = GetComponentsInChildren<Tile>();
 
             FillTilePositions(tiles);
             InitTiles(tiles);
         }
 
-        public bool IsTargetTileOccupied(TilePositionName name)
+        public void InitOnClient()
+        {
+            tilePositions = new Tile[8, 8];
+            tiles = GetComponentsInChildren<Tile>();
+
+            FillTilePositions(tiles);
+            InitTiles(tiles);
+        }
+
+        public bool IsTargetTileEmpty(TilePositionName name)
         {
             Tile targetTile = GetTileByPositionName(name);
-            return targetTile.occupyingPlayer != PlayerIndex.None;
+            return targetTile.occupyingPlayer == PlayerIndex.None;
         }
 
         public bool IsTargetTileOccupiedByOpposingPlayer(TilePositionName name, PlayerIndex callingPlayer)
@@ -47,22 +65,21 @@ namespace ChessPrototype.Base
             }
         }
 
-
-        public GameObject GetPiecePrefab(CurrentPiece piece)
+        public GameObject GetPiecePrefab(PieceType piece)
         {
             switch (piece)
             {
-                case CurrentPiece.Pawn:
+                case PieceType.Pawn:
                     return pawnPrefab;
-                case CurrentPiece.Knight:
+                case PieceType.Knight:
                     return knightPrefab;
-                case CurrentPiece.Rook:
+                case PieceType.Rook:
                     return rookPrefab;
-                case CurrentPiece.Bishop:
+                case PieceType.Bishop:
                     return bishopPrefab;
-                case CurrentPiece.Mage:
+                case PieceType.Mage:
                     return magePrefab;
-                case CurrentPiece.King:
+                case PieceType.King:
                     return kingPrefab;
                 default:
                     return null;
@@ -85,6 +102,176 @@ namespace ChessPrototype.Base
             }
 
             return tile;
+        }
+
+        public void HighlightValidTiles(Tile selectedTle, bool highlight)
+        {
+            // get piece through tile.
+            int pieceId = selectedTle.currentPieceId;
+
+            if (network == null)
+                network = FindObjectOfType<NetworkGameManager>();
+
+            Piece piece = network.pieces.Where(p => p.pieceId == pieceId).Single();
+
+            // Don't allow highlighting of an enemy piece.
+            if (!piece.hasAuthority && highlight)
+                return;
+
+            // Only allow highlighting of tiles when it is your turn and a piece hasn't moved already that turn.
+            if (piece.player != TurnManager.Instance.player || TurnManager.Instance.hasMovedThisTurn)
+                return;
+
+            PieceType type = piece.GetPieceType(piece);
+
+            switch (type)
+            {
+                case PieceType.Empty:
+                    break;
+                case PieceType.Pawn:
+                    Pawn pawn = piece as Pawn;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = pawn.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                case PieceType.Knight:
+                    Knight knight = piece as Knight;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = knight.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                case PieceType.Rook:
+                    Rook rook = piece as Rook;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = rook.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                case PieceType.Bishop:
+                    Bishop bishop = piece as Bishop;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = bishop.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                case PieceType.Mage:
+                    Mage mage = piece as Mage;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = mage.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                case PieceType.King:
+                    King king = piece as King;
+
+                    for (int i = 0; i < tiles.Length; i++)
+                    {
+                        bool valid = king.ValidateMove(selectedTle.tilePos, tiles[i].tilePos, selectedTle, tiles[i], true);
+
+                        if (valid)
+                        {
+                            TileOutline outline = tiles[i].GetComponentInChildren<TileOutline>();
+
+                            if (highlight)
+                            {
+                                outline.UpdateRendererMaterial(highlightMat);
+                            }
+                            else
+                            {
+                                outline.UpdateRendererMaterial(defaultMat);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void ClearTileHighlights()
+        {
+            foreach (Tile tile in tiles)
+            {
+                TileOutline t = tile.GetComponentInChildren<TileOutline>();
+                t.UpdateRendererMaterial(defaultMat);
+            }
         }
 
         public Tile GetTileByIndex(int row, int column)
@@ -189,7 +376,6 @@ namespace ChessPrototype.Base
 
             }
         }
-
 
     }
 }

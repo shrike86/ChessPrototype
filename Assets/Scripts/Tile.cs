@@ -1,4 +1,5 @@
 ﻿using ChessPrototype.Pieces;
+using ChessPrototype.UI;
 using Mirror;
 using System;
 using System.Collections;
@@ -13,19 +14,47 @@ namespace ChessPrototype.Base
         [SyncVar]
         public TilePositionName tilePos;
         [SyncVar]
-        public CurrentPiece networkPiece;
+        public PieceType networkPiece;
         [SyncVar]
         public PlayerIndex occupyingPlayer;
         [SyncVar]
         public int currentPieceId;
-
         public bool isSelected;
+        public bool isHighlightingValidMoves;
 
         private BoardManager boardManager;
+
+        public bool IsSelected
+        {
+            get { return isSelected; }
+            set 
+            { 
+                isSelected = value;
+
+                // Don't allow selection of empy tiles.
+                if (occupyingPlayer == PlayerIndex.None)
+                    return;
+
+                if (boardManager == null)
+                    boardManager = GetComponentInParent<BoardManager>();
+
+                if (isSelected)
+                {
+                    // In the case that the new selected tile shares a valid move with the old, give the old tile some time to be cleared so it doesn't override.
+                    StartCoroutine(WaitForResetThenHighlightValidTiles());
+                }
+                else
+                {
+                    boardManager.HighlightValidTiles(this, false);
+                    isHighlightingValidMoves = false;
+                }
+            }
+        }
 
         public void Init(BoardManager manager, int index)
         {
             this.boardManager = manager;
+            isHighlightingValidMoves = false;
 
             if (isServer)
             {
@@ -47,6 +76,14 @@ namespace ChessPrototype.Base
         {
             tilePos = (TilePositionName)index;
         }
+
+        private IEnumerator WaitForResetThenHighlightValidTiles()
+        {
+            yield return new WaitForEndOfFrame();
+
+            boardManager.HighlightValidTiles(this, true);
+            isHighlightingValidMoves = true;
+        }
     }
 
     public enum TilePositionName : byte
@@ -61,7 +98,7 @@ namespace ChessPrototype.Base
         A8, B8, C8, D8, E8, F8, G8, H8,
     }
 
-    public enum CurrentPiece : byte
+    public enum PieceType : byte
     {
         Empty = 0,
         Pawn = 1,

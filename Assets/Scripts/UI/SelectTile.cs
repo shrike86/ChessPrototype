@@ -25,14 +25,18 @@ namespace ChessPrototype.UI
             if (gameManager == null)
                 return;
 
-            if (tile == null || tile.isSelected)
+            if (tile == null || tile.IsSelected)
                 return;
 
-            tile.isSelected = !tile.isSelected;
 
-            gameManager.uIManager.CurrentSelectedTile = tile;
+            if (tile.occupyingPlayer != PlayerIndex.None)
+            {
+                tile.IsSelected = !tile.IsSelected;
+                gameManager.uIManager.CurrentSelectedTile = tile;
+            }
 
-            if (tile.isSelected)
+
+            if (tile.IsSelected)
             {
                 TileOutline outline = tile.GetComponentInChildren<TileOutline>();
                 outline.UpdateRendererMaterial(selectedMat);
@@ -41,7 +45,7 @@ namespace ChessPrototype.UI
 
         private void DeselectPreviousSelectedTile(Tile tile)
         {
-            tile.isSelected = false;
+            tile.IsSelected = false;
             TileOutline outline = tile.GetComponentInChildren<TileOutline>();
             outline.UpdateRendererMaterial(defaultMat);
         }

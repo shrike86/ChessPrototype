@@ -14,7 +14,6 @@ namespace ChessPrototype.AI
             ai.isStartedMoving = false;
             ai.isStoppedMoving = false;
             ai.anim.SetFloat("forward", 0);
-            Debug.Log(ai.anim.GetFloat("forward"));
         }
     }
 }

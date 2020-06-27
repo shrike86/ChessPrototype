@@ -731,7 +731,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: e3014db57c083774ebd6f04d65c26de8, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -979,7 +979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0.03
   clientAuthority: 1
   localPositionSensitivity: 0.01
   localRotationSensitivity: 0.01
@@ -1010,7 +1010,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -1068,6 +1068,9 @@ MonoBehaviour:
   player2Mat: {fileID: 2100000, guid: 8407fdf1f27a09b4e848cad5fb3517bc, type: 2}
   pieceId: 0
   player: 0
+  currentTile: 0
+  previousTile: 0
+  newTile: 0
   isDead: 0
   gameManager: {fileID: 0}
   isFirstMove: 0

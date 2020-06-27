@@ -618,6 +618,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &60230085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -779,6 +780,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &67017680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1254,6 +1256,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &103819314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1396,9 +1399,9 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   network: {fileID: 0}
+  gameManager: {fileID: 0}
   isGameStarted: 0
-  isPieceAttacking: 0
-  isPieceMoving: 0
+  hasMovedThisTurn: 0
   turnNumber: 0
   player: 0
   gameTimer_player1: 0
@@ -1485,6 +1488,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &109645125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1805,6 +1809,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &144148293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1905,6 +1910,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &174243746
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2005,6 +2011,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &185635080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2231,6 +2238,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &261410541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3547,6 +3555,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &415957153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3708,6 +3717,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &449974600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3776,6 +3786,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &456968520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4003,6 +4014,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &501595271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4352,6 +4364,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &521917694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5108,6 +5121,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &582552506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5459,6 +5473,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &608703718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5620,6 +5635,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &623290616
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5875,6 +5891,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &634106507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5943,6 +5960,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &635348241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6208,6 +6226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298462ecb6e2f034a939fb349e52b7b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tiles: []
   pawnPrefab: {fileID: 3478315714377493202, guid: 73c7da3947cd19345beb04391d009958,
     type: 3}
   knightPrefab: {fileID: 196288352588708261, guid: a425fef3d73be894cae2fdb46b6b9191,
@@ -6220,6 +6239,8 @@ MonoBehaviour:
     type: 3}
   kingPrefab: {fileID: 4987123492467566635, guid: 3eb2b7aa20b0d074899ab794eb015602,
     type: 3}
+  highlightMat: {fileID: 2100000, guid: 24fc149443333f74691c0791128de056, type: 2}
+  defaultMat: {fileID: 2100000, guid: cd6176a23e89ab643856c6cb1f141d22, type: 2}
 --- !u!4 &659199399
 Transform:
   m_ObjectHideFlags: 0
@@ -6445,6 +6466,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &672980742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6671,6 +6693,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &692540453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7147,6 +7170,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &732582801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7401,6 +7425,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &759809594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7655,6 +7680,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &798697247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8069,6 +8095,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &826906356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8231,6 +8258,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &844584206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8392,6 +8420,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &856382510
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8460,6 +8489,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &857345723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8716,6 +8746,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &886449185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8971,6 +9002,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &893986203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9290,6 +9322,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &921660681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9484,6 +9517,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &966730741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9864,6 +9898,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1008266464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10244,6 +10279,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1025048344
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10312,6 +10348,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1085502782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11317,6 +11354,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1156890019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11604,6 +11642,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1188066774
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11923,6 +11962,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1220614904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12271,6 +12311,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1269199724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12339,6 +12380,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1269809433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12625,6 +12667,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1312594824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12693,6 +12736,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1321071923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12981,6 +13025,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1358840418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14235,6 +14280,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1483874907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14303,6 +14349,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1496230006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14371,6 +14418,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1514439459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14969,6 +15017,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1607331560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15131,6 +15180,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1619388581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15199,6 +15249,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1647470386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15454,6 +15505,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1673136181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15960,6 +16012,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1719505655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16623,6 +16676,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1803680677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17131,6 +17185,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1910513788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17231,6 +17286,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1931173357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17331,6 +17387,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1942098827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17399,6 +17456,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1942819500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17623,6 +17681,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1981608516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17723,6 +17782,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &1985562742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18010,6 +18070,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2008905737
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18171,6 +18232,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2019316443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18239,6 +18301,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2022765756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18400,6 +18463,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2041355760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18656,6 +18720,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2063858851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18724,6 +18789,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2090540129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18824,6 +18890,7 @@ MonoBehaviour:
   occupyingPlayer: 0
   currentPieceId: 0
   isSelected: 0
+  isHighlightingValidMoves: 0
 --- !u!114 &2125592019
 MonoBehaviour:
   m_ObjectHideFlags: 0

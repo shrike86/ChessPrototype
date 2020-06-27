@@ -40,19 +40,17 @@ namespace ChessPrototype.AI
             hasAttacked = false;
             isStartedMoving = false;
             isStoppedMoving = false;
+
         }
 
         private void Update()
         {
-            if (!isLocalPlayer)
-            {
-                if (currentState != null)
-                    currentState.Tick(this);
+            if (currentState != null)
+                currentState.Tick(this);
 
-                if (moveAmount == 0 && anim.GetFloat("forward") > 0)
-                {
-                    anim.SetFloat("forward", 0);
-                }
+            if (moveAmount == 0 && anim.GetFloat("forward") > 0)
+            {
+                anim.SetFloat("forward", 0);
             }
         }
 
@@ -61,19 +59,19 @@ namespace ChessPrototype.AI
             dyingPiece.OnDeath += ResumeMovementAfterCombat;
         }
 
+        public void EndTurn()
+        {
+            if (!isServer)
+                return;
+
+            network.turnManager.IncrementTurn();
+        }
+
         private void ResumeMovementAfterCombat(Piece dyingPiece)
         {
             agent.isStopped = false;
             isStartedMoving = true;
             dyingPiece.OnDeath -= ResumeMovementAfterCombat;
-        }
-
-        private void EndTurn()
-        {
-            if (!hasAuthority)
-                return;
-
-            network.turnManager.CmdIncrementTurn();
         }
 
         [ClientRpc]

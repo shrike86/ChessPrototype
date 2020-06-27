@@ -11,7 +11,6 @@ namespace ChessPrototype.AI
         public override bool CheckCondition(AIManager ai)
         {
             bool arrived = false;
-
             if (ai.agent.hasPath || ai.agent.velocity.sqrMagnitude > 0)
                 return arrived;
 
@@ -23,6 +22,7 @@ namespace ChessPrototype.AI
                     ai.targetDestination = Vector3.zero;
                     AfterMovingFaceOriginalDirection(ai);
                     arrived = true;
+                    ai.EndTurn();
                 }
             }
 

@@ -11,16 +11,15 @@ namespace ChessPrototype
     {
         public static TurnManager Instance { get; private set; }
         public NetworkGameManager network;
+        public GameManager gameManager;
 
         [SyncVar]
         public bool isGameStarted;
         [SyncVar]
-        public bool isPieceAttacking;
-        [SyncVar]
-        public bool isPieceMoving;
+        public bool hasMovedThisTurn;
         [SyncVar]
         public int turnNumber;
-        [SyncVar]
+        [SyncVar(hook = nameof(HighlightSelectedTileOnTurnChange))]
         public PlayerIndex player;
         [SyncVar]
         public float gameTimer_player1;
@@ -30,6 +29,7 @@ namespace ChessPrototype
         private void Awake()
         {
             Instance = this;
+            gameManager = FindObjectOfType<GameManager>();
 
             isGameStarted = false;
             turnNumber = 0;
@@ -57,15 +57,10 @@ namespace ChessPrototype
 
         }
 
-        [Command]
-        public void CmdIncrementTurn()
-        {
-            IncrementTurn();
-        }
-
         public void IncrementTurn()
         {
             turnNumber++;
+            hasMovedThisTurn = false;
 
             switch (player)
             {
@@ -96,6 +91,38 @@ namespace ChessPrototype
                 default:
                     break;
             }
+        }
+
+        private void HighlightSelectedTileOnTurnChange(PlayerIndex oldPlayer, PlayerIndex newPlayer)
+        {
+            if (!isServer)
+                return;
+
+            if (newPlayer == PlayerIndex.Player1)
+            {
+                TargetHighlightTiles(NetworkServer.connections[0]);
+            }
+            else
+            {
+                TargetHighlightTiles(NetworkServer.connections[1]);
+            }
+        }
+
+        [TargetRpc]
+        private void TargetHighlightTiles(NetworkConnection conn)
+        {
+            Tile selectedTile = gameManager.uIManager.CurrentSelectedTile;
+
+            if (selectedTile == null)
+                return;
+
+            StartCoroutine(HighlightValidTilesAfterPeriod(selectedTile));
+        }
+
+        private IEnumerator HighlightValidTilesAfterPeriod(Tile selectedTile)
+        { 
+            yield return new WaitForSeconds(0.5f);
+            gameManager.boardManager.HighlightValidTiles(selectedTile, true);
         }
 
     }

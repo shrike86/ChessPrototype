@@ -15,6 +15,7 @@ namespace ChessPrototype.AI
             if (attack)
             {
                 ai.agent.isStopped = true;
+                ai.isStoppedMoving = true;
             }
 
             return attack;
